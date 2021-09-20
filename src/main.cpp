@@ -16,6 +16,9 @@ void endShell()
   // wait until all processes are initiated by the shell are complete
 
   // print out the total user and system time for all processes run by the shell
+  std::cout << "Resources used\n"
+            << "User time = \t" << 0 << " seconds\n"
+            << "Sys  time = \t" << 0 << " seconds" << std::endl;
   exit(0);
 }
 
@@ -32,7 +35,7 @@ void jobs()
             << "Processes = \t" << 0 << " active\n"
             << "Completed processes:\n"
             << "User time = \t" << 0 << " seconds\n"
-            << "Sys  time = \t" << 0 << " seconds\n";
+            << "Sys  time = \t" << 0 << " seconds" << std::endl;
 }
 
 void kill(int pid)
