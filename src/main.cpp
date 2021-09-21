@@ -1,12 +1,36 @@
 #include <iostream>
+#include <sstream>
 #include <string>
+#include <vector>
+
+#include "ProcessTable.hpp"
+
+#define MAX_PT_ENTRIES 32 // Max entries in the Process Table
+#define LINE_LENGTH 100   // Max # of characters in an input line
+#define MAX_ARGS 7        // Max number of arguments to a command
+#define MAX_LENGTH 20     // Max # of characters in an argument
 
 std::string getInput()
 {
   std::cout << "shell379> " << std::flush;
   std::string input;
-  std::cin >> input;
+  std::getline(std::cin, input);
   return input;
+}
+
+// https://java2blog.com/split-string-space-cpp/
+std::vector<std::string> tokenize(std::string const &str)
+{
+  std::vector<std::string> out;
+  // construct a stream from the string
+  std::stringstream ss(str);
+
+  std::string s;
+  while (std::getline(ss, s, ' '))
+  {
+    out.push_back(s);
+  }
+  return out;
 }
 
 void endShell()
@@ -25,17 +49,6 @@ void endShell()
 std::string printRunningProcesses()
 {
   return "";
-}
-
-void jobs()
-{
-  // display the status of all running processes spawned by shell379
-  std::cout << "Running processes:\n"
-            << printRunningProcesses()
-            << "Processes = \t" << 0 << " active\n"
-            << "Completed processes:\n"
-            << "User time = \t" << 0 << " seconds\n"
-            << "Sys  time = \t" << 0 << " seconds" << std::endl;
 }
 
 void kill(int pid)
@@ -68,22 +81,72 @@ void execute(char *cmd, char **arg)
 // <fname - take input from a file named fname
 // >fname - print output to a file named fname
 
+bool checkLineLength(std::string const &input)
+{
+  return input.size() <= LINE_LENGTH;
+}
+
+bool checkNumberArgs(std::vector<std::string> const &args)
+{
+  return args.size() <= MAX_ARGS + 1;
+}
+
+bool checkArgsLength(std::vector<std::string> const &args)
+{
+  for (auto const &a : args)
+  {
+    if (a.length() > 20)
+    {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+void run(ProcessTable &table)
+{
+  std::string input = getInput();
+  if (input == "")
+  {
+    return;
+  }
+  if (!checkLineLength(input))
+  {
+    std::cout << "Line too long" << std::endl;
+    return;
+  }
+
+  std::vector<std::string> args = tokenize(input);
+
+  if (!checkNumberArgs(args))
+  {
+    std::cout << "Too many arguments" << std::endl;
+    return;
+  }
+  if (!checkArgsLength(args))
+  {
+    std::cout << "Argument too long" << std::endl;
+    return;
+  }
+
+  if (args[0] == "exit")
+  {
+    endShell();
+  }
+  else if (args[0] == "jobs")
+  {
+    table.PrintProcesses();
+  }
+
+  table.NewJob(input);
+}
+
 int main(int argc, char *argv[])
 {
+  ProcessTable table = ProcessTable();
   while (true)
   {
-    std::string input = getInput();
-    if (input == "exit")
-    {
-      endShell();
-    }
-    else if (input == "jobs")
-    {
-      jobs();
-    }
-    else
-    {
-      std::cout << input << std::endl;
-    }
+    run(table);
   }
 }

@@ -5,7 +5,8 @@ BUILD_DIR           ?= build
 
 # Application sources and artifacts
 APP_BIN             = $(BUILD_DIR)/$(PROJECT)
-APP_SOURCES         = src/ProcessTable.cpp
+APP_SOURCES         = src/ProcessTable.cpp \
+											src/Process.cpp
 APP_MAIN            = src/main.cpp
 APP_OBJS            = $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(APP_SOURCES) $(APP_MAIN))
 
