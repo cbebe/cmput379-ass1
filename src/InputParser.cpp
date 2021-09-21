@@ -12,22 +12,18 @@ void InputParser::ReadInput()
   std::getline(std::cin, input);
 
   if (input == "")
-  {
     throw "";
-  }
+
   if (!checkLineLength())
-  {
     throw "Line too long\n";
-  }
+
   tokenize();
+
   if (!checkNumberArgs())
-  {
     throw "Too many arguments\n";
-  }
+
   if (!checkArgsLength())
-  {
     throw "Argument too long\n";
-  }
 }
 
 std::string InputParser::GetInput() const
@@ -62,6 +58,7 @@ bool InputParser::checkLineLength() const
 {
   return input.size() <= LINE_LENGTH;
 }
+
 bool InputParser::checkArgsLength() const
 {
   for (auto const &a : args)

@@ -1,40 +1,7 @@
 #include <iostream>
-#include <sstream>
-#include <string>
-#include <vector>
 
 #include "ProcessTable.hpp"
 #include "InputParser.hpp"
-
-void kill(int pid)
-{
-  // kill process pid
-}
-
-void resume(int pid)
-{
-  // resume process pid. this undoes a suspend
-}
-
-void suspend(int pid)
-{
-  // suspend execution of process pid. a resume will awaken it
-}
-
-void sleep(int seconds)
-{
-  // sleep for given seconds
-}
-
-void execute(char *cmd, char **arg)
-{
-  // spawn process to execute command with 0 or more arguments
-}
-
-// special arguments
-// & - last argument - must run in background
-// <fname - take input from a file named fname
-// >fname - print output to a file named fname
 
 void run(InputParser &parser, ProcessTable &table)
 {
@@ -50,6 +17,14 @@ void run(InputParser &parser, ProcessTable &table)
   else if (args[0] == "jobs")
   {
     table.PrintProcesses();
+  }
+  else if (args[0] == "wait")
+  {
+    if (args.size() < 2 || args[1] == "")
+    {
+      throw "PID required\n";
+    }
+    table.WaitJob(std::stoi(args[1]));
   }
   else
   {
