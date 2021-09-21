@@ -4,6 +4,8 @@
 #include <algorithm>
 #include <iostream>
 
+#define MAX_PT_ENTRIES 32 // Max entries in the Process Table
+
 void ProcessTable::PrintProcesses() const
 {
   std::cout << "Running processes:\n";
@@ -23,13 +25,25 @@ void ProcessTable::PrintProcesses() const
             << "Sys  time = \t" << 0 << " seconds" << std::endl;
 }
 
-void ProcessTable::NewJob(std::string cmd)
+void ProcessTable::PrintResourcesUsed() const
+{
+  std::cout << "Resources used\n"
+            << "User time = \t" << 0 << " seconds\n"
+            << "Sys  time = \t" << 0 << " seconds" << std::endl;
+}
+
+void ProcessTable::NewJob(std::string const &cmd)
 {
   NewJob(cmd, false);
 }
 
-void ProcessTable::NewJob(std::string cmd, bool inBackground)
+void ProcessTable::NewJob(std::string const &cmd, bool inBackground)
 {
+  if (processes.size() > MAX_PT_ENTRIES - 1)
+  {
+    throw "Max Process table entries exceeded\n";
+  }
+
   int pid = createProcess(cmd, inBackground);
   addProcess(Process(pid, cmd));
 }

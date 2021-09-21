@@ -6,8 +6,9 @@ class ProcessTable
 {
 public:
   void PrintProcesses() const;
-  void NewJob(std::string cmd);
-  void NewJob(std::string cmd, bool inBackground);
+  void PrintResourcesUsed() const;
+  void NewJob(std::string const &cmd);
+  void NewJob(std::string const &cmd, bool inBackground);
   void KillJob(int pid);
 
 private:
