@@ -32,7 +32,7 @@ void run(InputParser &parser, ProcessTable &table)
   }
 }
 
-int main(int argc, char *argv[])
+int main()
 {
   InputParser parser = InputParser();
   ProcessTable table = ProcessTable();
