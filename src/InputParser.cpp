@@ -24,6 +24,30 @@ void InputParser::ReadInput()
 
   if (!checkArgsLength())
     throw "Argument too long\n";
+
+  for (const std::string &s : args)
+  {
+    switch (s.at(0))
+    {
+    case '&':
+      options.inBackground = true;
+      break;
+    case '>':
+      options.outputFile = s.substr(1);
+      break;
+    case '<':
+      options.inputFile = s.substr(1);
+      break;
+    }
+  }
+}
+
+void InputParser::RequireArgs(size_t argc, const char *message)
+{
+  if (args.size() < argc)
+  {
+    throw message;
+  }
 }
 
 std::string InputParser::GetInput() const
@@ -34,6 +58,11 @@ std::string InputParser::GetInput() const
 std::vector<std::string> InputParser::GetArgs() const
 {
   return args;
+}
+
+InputOptions InputParser::GetOptions() const
+{
+  return options;
 }
 
 // https://java2blog.com/split-string-space-cpp/

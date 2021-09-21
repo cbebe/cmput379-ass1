@@ -1,14 +1,16 @@
+#pragma once
 #include <string>
 #include <map>
+
 #include "Process.hpp"
+#include "InputOptions.hpp"
 
 class ProcessTable
 {
 public:
   void PrintProcesses() const;
   void PrintResourcesUsed() const;
-  void NewJob(std::string const &cmd);
-  void NewJob(std::string const &cmd, bool inBackground);
+  void NewJob(std::string const &cmd, InputOptions const &options);
   void KillJob(int pid);
   void SuspendJob(int pid);
   void ResumeJob(int pid);
@@ -17,6 +19,7 @@ public:
 
 private:
   void addProcess(Process p);
-  int createProcess(std::string cmd, bool inBackground);
+  void removeProcess(int pid);
+  int createProcess(std::string const &cmd, InputOptions const &options);
   std::map<int, Process> processes;
 };

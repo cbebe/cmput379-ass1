@@ -20,15 +20,12 @@ void run(InputParser &parser, ProcessTable &table)
   }
   else if (args[0] == "wait")
   {
-    if (args.size() < 2 || args[1] == "")
-    {
-      throw "PID required\n";
-    }
+    parser.RequireArgs(2, "PID required\n");
     table.WaitJob(std::stoi(args[1]));
   }
   else
   {
-    table.NewJob(input);
+    table.NewJob(input, parser.GetOptions());
   }
 }
 
