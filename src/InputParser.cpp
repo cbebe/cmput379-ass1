@@ -3,27 +3,25 @@
 #include <sstream>
 
 #define LINE_LENGTH 100 // Max # of characters in an input line
-#define MAX_ARGS 7      // Max number of arguments to a command
 #define MAX_LENGTH 20   // Max # of characters in an argument
 
 void InputParser::ReadInput()
 {
-  std::cout << "shell379> " << std::flush;
   std::getline(std::cin, input);
 
   if (input == "")
-    throw "";
+    return;
 
   if (!checkLineLength())
-    throw "Line too long\n";
+    throw "Line too long";
 
   tokenize();
 
   if (!checkNumberArgs())
-    throw "Too many arguments\n";
+    throw "Too many arguments";
 
   if (!checkArgsLength())
-    throw "Argument too long\n";
+    throw "Argument too long";
 }
 
 InputOptions InputParser::GetCmdOptions() const
@@ -41,7 +39,7 @@ InputOptions InputParser::GetCmdOptions() const
       // makes sure that there's a command
       if (arg != "&" || args.size() == 1 || i != args.size() - 1)
       {
-        throw "Invalid input of '&'\n";
+        throw "Invalid input of '&'";
       }
       options.inBackground = true;
       break;
@@ -70,7 +68,7 @@ int InputParser::RequireInt(const char *message)
   try
   {
     if (args.size() > 2)
-      throw "Wrong number of args\n";
+      throw "Wrong number of args";
 
     return std::stoi(args[1]);
   }

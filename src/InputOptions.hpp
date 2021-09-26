@@ -2,6 +2,8 @@
 #include <vector>
 #include <string>
 
+#define MAX_ARGS 7 // Max number of arguments to a command
+
 typedef struct
 {
   bool inBackground;

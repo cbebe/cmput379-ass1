@@ -15,27 +15,27 @@ void ProcessTable::PrintProcesses() const
     int i = 0;
     for (auto &p : processes)
     {
-      std::cout << std::setw(2) << i++ << ": " << p.second.PrintProcess() << std::endl;
+      std::cout << std::setw(2) << i++ << ": " << p.second.PrintProcess() << "\n";
     }
   }
   std::cout << "Processes = \t" << numProcesses << " active\n"
             << "Completed processes:\n"
             << "User time = \t" << 0 << " seconds\n"
-            << "Sys  time = \t" << 0 << " seconds" << std::endl;
+            << "Sys  time = \t" << 0 << " seconds\n";
 }
 
 void ProcessTable::PrintResourcesUsed() const
 {
   std::cout << "Resources used\n"
             << "User time = \t" << 0 << " seconds\n"
-            << "Sys  time = \t" << 0 << " seconds" << std::endl;
+            << "Sys  time = \t" << 0 << " seconds\n";
 }
 
 void ProcessTable::NewJob(const std::string &cmd, InputOptions const &options)
 {
   // spawn process to execute command with 0 or more arguments
   if (processes.size() > MAX_PT_ENTRIES - 1)
-    throw "Max Process table entries exceeded\n";
+    throw "Max Process table entries exceeded";
 
   addProcess(Process::from(cmd, options));
 }
@@ -94,6 +94,6 @@ Process &ProcessTable::getProcess(int pid)
   }
   catch (std::out_of_range &e)
   {
-    throw "Process not found\n";
+    throw "Process not found";
   }
 }
