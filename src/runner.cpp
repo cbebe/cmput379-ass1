@@ -1,10 +1,10 @@
 #include <iostream>
 #include <chrono>
-#include <sys/resource.h>
 
-void longlongJob(long long maxSeconds, long long num)
+int longlongJob(long long maxSeconds, long long num)
 {
-	using namespace std::chrono;
+	using std::chrono::high_resolution_clock;
+	using std::chrono::seconds;
 	seconds maxDuration(maxSeconds);
 
 	auto start = high_resolution_clock::now();
@@ -13,25 +13,35 @@ void longlongJob(long long maxSeconds, long long num)
 		for (long long j = 0; j < num; j++)
 		{
 			if ((high_resolution_clock::now() - start) >= maxDuration)
-				return;
+				return k;
+
 			k += 20;
 		}
+
+	return k;
 }
 
-int main()
+int main(int argc, char const *argv[])
 {
 	long long maxSeconds;
 	long long num;
-	std::cin >> maxSeconds >> num;
+	if (argc == 3)
+	{
+		maxSeconds = std::stoi(argv[1]);
+		num = std::stoi(argv[2]);
+	}
+	else if (argc == 2)
+	{
+		maxSeconds = std::stoi(argv[1]);
+		num = 200000000000;
+	}
+	else
+	{
+		std::cin >> maxSeconds >> num;
+	}
 
-	struct rusage usage;
-
-	longlongJob(maxSeconds, num);
-
-	getrusage(RUSAGE_SELF, &usage);
-
-	std::cout << usage.ru_utime.tv_sec << std::endl;
-	std::cout << usage.ru_stime.tv_sec << std::endl;
+	int result = longlongJob(maxSeconds, num);
+	std::cout << result << std::endl;
 
 	return 0;
 }
