@@ -1,5 +1,4 @@
 #include "ProcessTable.hpp"
-#include <cstdlib>
 #include <iomanip>
 #include <algorithm>
 #include <iostream>
@@ -36,12 +35,9 @@ void ProcessTable::NewJob(const std::string &cmd, InputOptions const &options)
 {
   // spawn process to execute command with 0 or more arguments
   if (processes.size() > MAX_PT_ENTRIES - 1)
-  {
     throw "Max Process table entries exceeded\n";
-  }
 
-  int pid = createProcess(options);
-  addProcess(Process(pid, cmd));
+  addProcess(Process::from(cmd, options));
 }
 
 // special arguments
@@ -52,49 +48,52 @@ void ProcessTable::NewJob(const std::string &cmd, InputOptions const &options)
 void ProcessTable::KillJob(int pid)
 {
   // kill process pid
-  std::cout << "Kill " << pid << std::endl;
+  getProcess(pid).Kill();
+  removeProcess(pid);
 }
 
 void ProcessTable::SuspendJob(int pid)
 {
   // suspend execution of process pid. a resume will awaken it
-  std::cout << "Suspend " << pid << std::endl;
+  getProcess(pid).Suspend();
 }
 
 void ProcessTable::WaitJob(int pid)
 {
-  std::cout << "Wait " << pid << std::endl;
+  getProcess(pid).Wait();
+  removeProcess(pid);
 }
 
 void ProcessTable::Sleep(int seconds)
 {
   // sleep for given seconds
-  std::cout << "Sleep " << seconds << std::endl;
+  Process::Sleep(seconds);
 }
 
 void ProcessTable::ResumeJob(int pid)
 {
   // resume process pid. this undoes a suspend
-  std::cout << "Resume " << pid << std::endl;
-}
-
-// creates the process and returns its pid
-// call fork here
-int ProcessTable::createProcess(InputOptions const &options)
-{
-  for (const std::string &i : options.inputFiles)
-  {
-    std::cout << i << std::endl;
-  }
-  return rand() % 10000;
+  getProcess(pid).Resume();
 }
 
 void ProcessTable::addProcess(Process p)
 {
-  processes.emplace(p.getPid(), p);
+  processes.emplace(p.GetPid(), p);
 }
 
 void ProcessTable::removeProcess(int pid)
 {
   processes.erase(pid);
+}
+
+Process &ProcessTable::getProcess(int pid)
+{
+  try
+  {
+    return processes.at(pid);
+  }
+  catch (std::out_of_range &e)
+  {
+    throw "Process not found\n";
+  }
 }

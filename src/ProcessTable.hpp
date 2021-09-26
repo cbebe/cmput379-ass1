@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include <map>
+#include <unordered_map>
 
 #include "Process.hpp"
 #include "InputOptions.hpp"
@@ -20,6 +20,6 @@ public:
 private:
   void addProcess(Process p);
   void removeProcess(int pid);
-  int createProcess(InputOptions const &options);
-  std::map<int, Process> processes;
+  Process &getProcess(int pid);
+  std::unordered_map<int, Process> processes;
 };
