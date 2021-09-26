@@ -5,11 +5,11 @@ BUILD_DIR           ?= build
 
 # Application sources and artifacts
 APP_BIN             = $(PROJECT)
-APP_SOURCES         = src/ProcessTable.cc \
-											src/Process.cc \
-											src/InputParser.cc
-APP_MAIN            = src/main.cc
-APP_OBJS            = $(patsubst %.cc,$(BUILD_DIR)/%.o,$(APP_SOURCES) $(APP_MAIN))
+APP_SOURCES         = src/ProcessTable.cpp \
+											src/Process.cpp \
+											src/InputParser.cpp
+APP_MAIN            = src/main.cpp
+APP_OBJS            = $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(APP_SOURCES) $(APP_MAIN))
 
 # Generated dependency files
 DEPS                = $(APP_OBJS:.o=.d)
@@ -27,7 +27,7 @@ else
 endif
 
 CFLAGS              += $(COMMON_CFLAGS)
-CXXFLAGS            += $(COMMON_CFLAGS) -std=c++14
+CXXFLAGS            += $(COMMON_CFLAGS) -std=c++17
 
 # Silence make
 ifneq ($(V),)
@@ -57,7 +57,7 @@ runner: $(BUILD_DIR)/runner.o
 	$(SHOW_CXX) $@
 	$(SILENCE) $(CXX) $(CXXFLAGS) -o $@ $<
 
-$(BUILD_DIR)/runner.o: src/runner.cc
+$(BUILD_DIR)/runner.o: src/runner.cpp
 	$(SHOW_CXX) $@
 	$(SILENCE)$(CXX) $(CXXFLAGS) -c $< -o $@
 
@@ -65,7 +65,7 @@ sleeper: $(BUILD_DIR)/sleeper.o
 	$(SHOW_CXX) $@
 	$(SILENCE) $(CXX) $(CXXFLAGS) -o $@ $<
 
-$(BUILD_DIR)/sleeper.o: src/sleeper.cc
+$(BUILD_DIR)/sleeper.o: src/sleeper.cpp
 	$(SHOW_CXX) $@
 	$(SILENCE)$(CXX) $(CXXFLAGS) -c $< -o $@
 
@@ -79,7 +79,7 @@ $(APP_BIN): $(APP_OBJS)
 	$(SHOW_CXX) $@
 	$(SILENCE)$(CXX) -o $@ $(APP_OBJS)
 
-$(BUILD_DIR)/%.o: %.cc
+$(BUILD_DIR)/%.o: %.cpp
 	$(SHOW_CXX) $@
 	$(SILENCE)mkdir -p $(dir $@)
 	$(SILENCE)$(CXX) $(CXXFLAGS) -c $< -o $@

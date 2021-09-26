@@ -2,19 +2,18 @@
 #define PROCESS_H_
 
 #include <string>
+
 #include "InputOptions.h"
 
-typedef enum
-{
+typedef enum {
   RUNNING = 'R',
   SUSPENDED = 'S',
   ZOMBIE = 'Z',
   DONE = 'D'
 } Status;
 
-class Process
-{
-public:
+class Process {
+ public:
   static void Sleep(int seconds);
   static Process from(std::string const &cmd, InputOptions options);
   static void PrintResourceUsage();
@@ -27,11 +26,11 @@ public:
   Status GetStatus() const;
   void SetStatus(Status s);
 
-private:
+ private:
   Process(int pid, std::string const &cmd);
   int pid;
   Status status;
   std::string cmd;
 };
 
-#endif // PROCESS_H_
+#endif  // PROCESS_H_
