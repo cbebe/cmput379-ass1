@@ -6,6 +6,7 @@ typedef enum
 {
   RUNNING = 'R',
   SUSPENDED = 'S',
+  ZOMBIE = 'Z',
   DONE = 'D'
 } Status;
 

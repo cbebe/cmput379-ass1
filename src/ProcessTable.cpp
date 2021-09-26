@@ -1,6 +1,5 @@
 #include "ProcessTable.hpp"
 #include <iomanip>
-#include <algorithm>
 #include <iostream>
 
 #define MAX_PT_ENTRIES 32 // Max entries in the Process Table

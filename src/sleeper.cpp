@@ -1,5 +1,6 @@
 #include <unistd.h>
 #include <iostream>
+
 void printUsage(char const *name)
 {
 	std::cout << "USAGE: " << name << " <seconds>" << std::endl;
