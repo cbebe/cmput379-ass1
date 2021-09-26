@@ -28,31 +28,31 @@ void InputParser::ReadInput()
 
 InputOptions InputParser::GetCmdOptions() const
 {
-  // reset options
   InputOptions options;
 
   // i would've used a range-based for loop
-  // but i'm not sure how i would check that & is the last argument
+  // but i'm not sure how i would check that '&' is the last argument
   for (unsigned int i = 0; i < args.size(); i++)
   {
-    switch (args[i].at(0))
+    std::string arg = args[i];
+    switch (arg.at(0))
     {
     case '&':
       // makes sure that there's a command
-      if (args[i] != "&" || args.size() == 1 || i != args.size() - 1)
+      if (arg != "&" || args.size() == 1 || i != args.size() - 1)
       {
         throw "Invalid input of '&'\n";
       }
       options.inBackground = true;
       break;
     case '>':
-      options.outputFiles.push_back(args[i].substr(1));
+      options.outputFiles.push_back(arg.substr(1));
       break;
     case '<':
-      options.inputFiles.push_back(args[i].substr(1));
+      options.inputFiles.push_back(arg.substr(1));
       break;
     default:
-      options.cmdArgs.push_back(args[i]);
+      options.cmdArgs.push_back(arg);
     }
   }
 
@@ -60,9 +60,7 @@ InputOptions InputParser::GetCmdOptions() const
   // but that wasn't part of the assignment specification
   // maybe some other time
   if (options.cmdArgs.size() < 1)
-  {
     throw "No command given";
-  }
 
   return options;
 }
@@ -72,9 +70,7 @@ int InputParser::RequireInt(const char *message)
   try
   {
     if (args.size() > 2)
-    {
       throw std::invalid_argument("wrong number of args");
-    }
 
     return std::stoi(args[1]);
   }
@@ -94,14 +90,12 @@ std::vector<std::string> InputParser::GetArgs() const
   return args;
 }
 
-// https://java2blog.com/split-string-space-cpp/
+// https://www.quora.com/How-do-I-split-a-string-by-space-into-an-array-in-c++
 void InputParser::tokenize()
 {
-  // construct a stream from the string
-  std::stringstream ss(input);
+  std::istringstream iss(input);
   args.clear();
-  std::string s;
-  while (std::getline(ss, s, ' '))
+  for (std::string s; iss >> s;)
   {
     args.push_back(s);
   }
