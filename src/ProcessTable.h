@@ -1,9 +1,11 @@
-#pragma once
+#ifndef PROCESS_TABLE_H_
+#define PROCESS_TABLE_H_
+
 #include <string>
 #include <unordered_map>
 
-#include "Process.hpp"
-#include "InputOptions.hpp"
+#include "Process.h"
+#include "InputOptions.h"
 
 class ProcessTable
 {
@@ -23,3 +25,5 @@ private:
   Process &getProcess(int pid);
   std::unordered_map<int, Process> processes;
 };
+
+#endif // PROCESS_TABLE_H_

@@ -1,8 +1,10 @@
-#pragma once
+#ifndef INPUT_PARSER_H_
+#define INPUT_PARSER_H_
+
 #include <string>
 #include <vector>
 
-#include "InputOptions.hpp"
+#include "InputOptions.h"
 
 class InputParser
 {
@@ -21,3 +23,5 @@ private:
   std::vector<std::string> args;
   std::string input;
 };
+
+#endif // INPUT_PARSER_H_

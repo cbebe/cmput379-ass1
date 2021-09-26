@@ -1,6 +1,8 @@
-#pragma once
+#ifndef PROCESS_H_
+#define PROCESS_H_
+
 #include <string>
-#include "InputOptions.hpp"
+#include "InputOptions.h"
 
 typedef enum
 {
@@ -31,3 +33,5 @@ private:
   Status status;
   std::string cmd;
 };
+
+#endif // PROCESS_H_

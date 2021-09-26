@@ -1,4 +1,6 @@
-#pragma once
+#ifndef INPUT_OPTIONS_H_
+#define INPUT_OPTIONS_H_
+
 #include <vector>
 #include <string>
 
@@ -13,3 +15,5 @@ public:
   std::vector<std::string> inputFiles;
   std::vector<std::string> outputFiles;
 };
+
+#endif // INPUT_OPTIONS_H_

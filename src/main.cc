@@ -1,7 +1,7 @@
 #include <iostream>
 
-#include "ProcessTable.hpp"
-#include "InputParser.hpp"
+#include "ProcessTable.h"
+#include "InputParser.h"
 
 void run(InputParser &parser, ProcessTable &table)
 {

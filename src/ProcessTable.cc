@@ -1,6 +1,8 @@
-#include "ProcessTable.hpp"
 #include <iomanip>
+#include <stdexcept>
 #include <iostream>
+
+#include "ProcessTable.h"
 
 #define MAX_PT_ENTRIES 32 // Max entries in the Process Table
 
@@ -30,7 +32,6 @@ void ProcessTable::PrintResourcesUsed() const
 
 void ProcessTable::NewJob(const std::string &cmd, InputOptions const &options)
 {
-  // spawn process to execute command with 0 or more arguments
   if (processes.size() > MAX_PT_ENTRIES - 1)
     throw "Max Process table entries exceeded";
 
@@ -39,21 +40,14 @@ void ProcessTable::NewJob(const std::string &cmd, InputOptions const &options)
     addProcess(process);
 }
 
-// special arguments
-// & - last argument - must run in background
-// <fname - take input from a file named fname
-// >fname - print output to a file named fname
-
 void ProcessTable::KillJob(int pid)
 {
-  // kill process pid
   getProcess(pid).Kill();
   removeProcess(pid);
 }
 
 void ProcessTable::SuspendJob(int pid)
 {
-  // suspend execution of process pid. a resume will awaken it
   getProcess(pid).Suspend();
 }
 
@@ -65,13 +59,11 @@ void ProcessTable::WaitJob(int pid)
 
 void ProcessTable::Sleep(int seconds)
 {
-  // sleep for given seconds
   Process::Sleep(seconds);
 }
 
 void ProcessTable::ResumeJob(int pid)
 {
-  // resume process pid. this undoes a suspend
   getProcess(pid).Resume();
 }
 

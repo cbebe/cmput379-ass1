@@ -5,7 +5,7 @@
 #include <sys/wait.h>
 #include <sys/resource.h>
 
-#include "Process.hpp"
+#include "Process.h"
 
 Process Process::from(std::string const &cmd, InputOptions options)
 {
