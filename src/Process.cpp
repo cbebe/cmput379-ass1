@@ -1,21 +1,16 @@
 #include <iomanip>
 #include <iostream>
 #include <sstream>
-#include <string>
 #include <unistd.h>
 #include <sys/wait.h>
-
-#include <csignal>
-#include <cstring>
+#include <sys/resource.h>
 
 #include "Process.hpp"
 
 Process Process::from(std::string const &cmd, InputOptions options)
 {
-  // creates the process and returns its pid
-  // call fork here
-  bool fromStdIn = options.inputFiles.size() == 0;
-  bool toStdOut = options.outputFiles.size() == 0;
+  // bool fromStdIn = options.inputFiles.size() == 0;
+  // bool toStdOut = options.outputFiles.size() == 0;
 
   pid_t pid = fork();
   if (pid < 0)
@@ -50,9 +45,27 @@ Process Process::from(std::string const &cmd, InputOptions options)
       exit(1);
     }
   }
+  // parent process, create Process object
 
-  // parent process
-  return Process(pid, cmd);
+  Process p = Process(pid, cmd);
+
+  if (!options.inBackground)
+  {
+    int status;
+    waitpid(pid, &status, 0);
+    p.SetStatus(DONE);
+  }
+
+  return p;
+}
+
+void Process::PrintResourceUsage()
+{
+  struct rusage usage;
+  getrusage(RUSAGE_CHILDREN, &usage);
+
+  std::cout << "User time = \t" << usage.ru_utime.tv_sec << " seconds\n"
+            << "Sys  time = \t" << usage.ru_stime.tv_sec << " seconds\n";
 }
 
 Process::Process(int pid, std::string const &cmd)
@@ -79,15 +92,16 @@ void Process::Sleep(int seconds)
 
 void Process::Kill()
 {
-  // kill process here
-  if (!kill(pid, SIGKILL))
+  if (kill(pid, SIGKILL) != 0)
     throw "Kill failed";
+
+  // it's a zombie process by this point, might as well reap
+  Wait();
 }
 
 void Process::Wait()
 {
   int status;
-  // wait for process to finish here
   waitpid(pid, &status, 0);
 }
 
@@ -96,8 +110,7 @@ void Process::Resume()
   if (this->status == RUNNING)
     throw "Process already running";
 
-  // resume here
-  if (!kill(pid, SIGCONT))
+  if (kill(pid, SIGCONT) != 0)
     throw "Resume failed";
 
   this->status = RUNNING;
@@ -108,8 +121,7 @@ void Process::Suspend()
   if (this->status == SUSPENDED)
     throw "Process already suspended";
 
-  // suspend here
-  if (!kill(pid, SIGSTOP))
+  if (kill(pid, SIGSTOP) != 0)
     throw "Suspend failed";
 
   this->status = SUSPENDED;
@@ -118,4 +130,14 @@ void Process::Suspend()
 int Process::GetPid() const
 {
   return pid;
+};
+
+void Process::SetStatus(Status s)
+{
+  this->status = s;
+};
+
+Status Process::GetStatus() const
+{
+  return status;
 };

@@ -19,16 +19,14 @@ void ProcessTable::PrintProcesses() const
     }
   }
   std::cout << "Processes = \t" << numProcesses << " active\n"
-            << "Completed processes:\n"
-            << "User time = \t" << 0 << " seconds\n"
-            << "Sys  time = \t" << 0 << " seconds\n";
+            << "Completed processes:\n";
+  Process::PrintResourceUsage();
 }
 
 void ProcessTable::PrintResourcesUsed() const
 {
-  std::cout << "Resources used\n"
-            << "User time = \t" << 0 << " seconds\n"
-            << "Sys  time = \t" << 0 << " seconds\n";
+  std::cout << "Resources used\n";
+  Process::PrintResourceUsage();
 }
 
 void ProcessTable::NewJob(const std::string &cmd, InputOptions const &options)
@@ -37,7 +35,9 @@ void ProcessTable::NewJob(const std::string &cmd, InputOptions const &options)
   if (processes.size() > MAX_PT_ENTRIES - 1)
     throw "Max Process table entries exceeded";
 
-  addProcess(Process::from(cmd, options));
+  Process process = Process::from(cmd, options);
+  if (process.GetStatus() != DONE)
+    addProcess(process);
 }
 
 // special arguments
