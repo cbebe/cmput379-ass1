@@ -68,10 +68,11 @@ Process::Process(int pid, std::string const &cmd) {
   this->status = RUNNING;
 }
 
-std::string Process::PrintProcess() const {
+std::string Process::PrintProcess(PsEntry entry) const {
   std::stringstream s;
-  s << std::setw(5) << pid << std::setw(2) << (char)status << std::setw(4) << 0
-    << " " << cmd;
+  Status currentStatus = entry.zombie ? ZOMBIE : status;
+  s << std::setw(5) << pid << std::setw(2) << (char)currentStatus
+    << std::setw(4) << entry.time << " " << cmd;
   return s.str();
 };
 
@@ -94,6 +95,8 @@ void Process::Kill() {
 
 void Process::Wait() {
   int status;
+  // don't let program hang by waiting for a suspended process
+  Resume();
   waitpid(pid, &status, 0);
 }
 

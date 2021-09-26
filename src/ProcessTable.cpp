@@ -1,5 +1,6 @@
 #include "ProcessTable.h"
 #include "InputParser.h"
+#include "PsEntry.h"
 
 #include <iomanip>
 #include <iostream>
@@ -7,11 +8,6 @@
 #include <unordered_map>
 
 #define MAX_PT_ENTRIES 32 // Max entries in the Process Table
-
-using PsEntry = struct {
-  int time;
-  bool zombie;
-};
 
 using PsEntryTable = std::unordered_map<int, PsEntry>;
 
@@ -58,11 +54,8 @@ void ProcessTable::PrintProcesses() const {
     std::cout << " #    PID S SEC COMMAND\n";
     int i = 0;
     for (auto const &p : processes) {
-      PsEntry entry = psEntries.at(p.second.GetPid());
-      Status s = entry.zombie ? ZOMBIE : p.second.GetStatus();
-      std::cout << std::setw(2) << i++ << ": " << std::setw(5)
-                << p.second.GetPid() << std::setw(2) << (char)s << std::setw(4)
-                << entry.time << " " << p.second.GetCmd() << "\n";
+      std::cout << std::setw(2) << i++ << ": "
+                << p.second.PrintProcess(psEntries.at(p.first)) << "\n";
     }
   }
   std::cout << "Processes = \t" << numProcesses << " active\n"
