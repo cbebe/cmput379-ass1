@@ -6,6 +6,30 @@
 #define LINE_LENGTH 100 // Max # of characters in an input line
 #define MAX_LENGTH 20   // Max # of characters in an argument
 
+using std::string;
+using std::vector;
+
+// https://www.quora.com/How-do-I-split-a-string-by-space-into-an-array-in-c++
+vector<string> InputParser::Tokenize(string const &input) {
+  std::istringstream iss(input);
+  vector<string> tokens;
+  for (string s; iss >> s;) {
+    tokens.push_back(s);
+  }
+
+  return tokens;
+}
+
+vector<string> InputParser::Split(string const &input, char delim) {
+  std::stringstream ss(input);
+  vector<string> tokens;
+  for (string s; std::getline(ss, s, delim);) {
+    tokens.push_back(s);
+  }
+
+  return tokens;
+}
+
 void InputParser::ReadInput() {
   std::getline(std::cin, input);
 
@@ -17,7 +41,7 @@ void InputParser::ReadInput() {
     throw "Line too long";
   }
 
-  tokenize();
+  args = Tokenize(input);
 
   if (!checkNumberArgs()) {
     throw "Too many arguments";
@@ -34,7 +58,7 @@ InputOptions InputParser::GetCmdOptions() const {
   // i would've used a range-based for loop
   // but i'm not sure how i would check that '&' is the last argument
   for (unsigned int i = 0; i < args.size(); i++) {
-    std::string arg = args[i];
+    string arg = args[i];
     switch (arg.at(0)) {
     case '&':
       // makes sure that there's a command
@@ -76,18 +100,9 @@ int InputParser::RequireInt(const char *message) {
   }
 }
 
-std::string InputParser::GetInput() const { return input; }
+string InputParser::GetInput() const { return input; }
 
-std::vector<std::string> InputParser::GetArgs() const { return args; }
-
-// https://www.quora.com/How-do-I-split-a-string-by-space-into-an-array-in-c++
-void InputParser::tokenize() {
-  std::istringstream iss(input);
-  args.clear();
-  for (std::string s; iss >> s;) {
-    args.push_back(s);
-  }
-}
+vector<string> InputParser::GetArgs() const { return args; }
 
 bool InputParser::checkNumberArgs() const {
   return args.size() <= MAX_ARGS + 1;

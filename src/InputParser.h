@@ -8,6 +8,8 @@
 
 class InputParser {
 public:
+  static std::vector<std::string> Tokenize(std::string const &input);
+  static std::vector<std::string> Split(std::string const &input, char delim);
   void ReadInput();
   std::string GetInput() const;
   std::vector<std::string> GetArgs() const;
@@ -15,7 +17,6 @@ public:
   int RequireInt(const char *message);
 
 private:
-  void tokenize();
   bool checkNumberArgs() const;
   bool checkLineLength() const;
   bool checkArgsLength() const;

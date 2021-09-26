@@ -30,7 +30,7 @@ Process Process::from(std::string const &cmd, InputOptions options) {
     arr.reserve(options.cmdArgs.size() + 1);
     // still have to use pointers, so i just ended up using const_cast to
     // remove the const
-    for (std::string &sp : options.cmdArgs) {
+    for (auto const &sp : options.cmdArgs) {
       arr.push_back(const_cast<char *>(sp.c_str()));
     }
 
@@ -122,6 +122,8 @@ void Process::Suspend() {
 }
 
 int Process::GetPid() const { return pid; };
+
+std::string Process::GetCmd() const { return cmd; }
 
 void Process::SetStatus(Status s) { this->status = s; };
 

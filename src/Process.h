@@ -23,6 +23,7 @@ public:
   void Resume();
   void Suspend();
   int GetPid() const;
+  std::string GetCmd() const;
   Status GetStatus() const;
   void SetStatus(Status s);
 
