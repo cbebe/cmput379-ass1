@@ -70,7 +70,7 @@ int InputParser::RequireInt(const char *message)
   try
   {
     if (args.size() > 2)
-      throw std::invalid_argument("wrong number of args");
+      throw "Wrong number of args\n";
 
     return std::stoi(args[1]);
   }
