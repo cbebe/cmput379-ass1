@@ -10,7 +10,7 @@ class ProcessTable
 public:
   void PrintProcesses() const;
   void PrintResourcesUsed() const;
-  void NewJob(std::string const &cmd, InputOptions const &options);
+  void NewJob(const std::string &cmd, InputOptions const &options);
   void KillJob(int pid);
   void SuspendJob(int pid);
   void ResumeJob(int pid);
@@ -20,6 +20,6 @@ public:
 private:
   void addProcess(Process p);
   void removeProcess(int pid);
-  int createProcess(std::string const &cmd, InputOptions const &options);
+  int createProcess(InputOptions const &options);
   std::map<int, Process> processes;
 };

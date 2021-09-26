@@ -32,7 +32,7 @@ void ProcessTable::PrintResourcesUsed() const
             << "Sys  time = \t" << 0 << " seconds" << std::endl;
 }
 
-void ProcessTable::NewJob(std::string const &cmd, InputOptions const &options)
+void ProcessTable::NewJob(const std::string &cmd, InputOptions const &options)
 {
   // spawn process to execute command with 0 or more arguments
   if (processes.size() > MAX_PT_ENTRIES - 1)
@@ -40,7 +40,7 @@ void ProcessTable::NewJob(std::string const &cmd, InputOptions const &options)
     throw "Max Process table entries exceeded\n";
   }
 
-  int pid = createProcess(cmd, options);
+  int pid = createProcess(options);
   addProcess(Process(pid, cmd));
 }
 
@@ -80,8 +80,12 @@ void ProcessTable::ResumeJob(int pid)
 
 // creates the process and returns its pid
 // call fork here
-int ProcessTable::createProcess(std::string const &cmd, InputOptions const &options)
+int ProcessTable::createProcess(InputOptions const &options)
 {
+  for (const std::string &i : options.inputFiles)
+  {
+    std::cout << i << std::endl;
+  }
   return rand() % 10000;
 }
 

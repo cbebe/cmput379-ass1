@@ -24,27 +24,61 @@ void InputParser::ReadInput()
 
   if (!checkArgsLength())
     throw "Argument too long\n";
+}
 
-  for (const std::string &s : args)
+InputOptions InputParser::GetCmdOptions() const
+{
+  // reset options
+  InputOptions options;
+
+  // i would've used a range-based for loop
+  // but i'm not sure how i would check that & is the last argument
+  for (unsigned int i = 0; i < args.size(); i++)
   {
-    switch (s.at(0))
+    switch (args[i].at(0))
     {
     case '&':
+      // makes sure that there's a command
+      if (args[i] != "&" || args.size() == 1 || i != args.size() - 1)
+      {
+        throw "Invalid input of '&'\n";
+      }
       options.inBackground = true;
       break;
     case '>':
-      options.outputFile = s.substr(1);
+      options.outputFiles.push_back(args[i].substr(1));
       break;
     case '<':
-      options.inputFile = s.substr(1);
+      options.inputFiles.push_back(args[i].substr(1));
       break;
+    default:
+      options.cmdArgs.push_back(args[i]);
     }
   }
+
+  // i wanted to implement just piping to files from stdin and from files to stdout
+  // but that wasn't part of the assignment specification
+  // maybe some other time
+  if (options.cmdArgs.size() < 1)
+  {
+    throw "No command given";
+  }
+
+  return options;
 }
 
-void InputParser::RequireArgs(size_t argc, const char *message)
+int InputParser::RequireInt(const char *message)
 {
-  if (args.size() < argc)
+  try
+  {
+    if (args.size() > 2)
+    {
+      throw std::invalid_argument("wrong number of args");
+    }
+
+    return std::stoi(args[1]);
+  }
+  catch (std::invalid_argument &e)
   {
     throw message;
   }
@@ -58,11 +92,6 @@ std::string InputParser::GetInput() const
 std::vector<std::string> InputParser::GetArgs() const
 {
   return args;
-}
-
-InputOptions InputParser::GetOptions() const
-{
-  return options;
 }
 
 // https://java2blog.com/split-string-space-cpp/

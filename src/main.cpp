@@ -18,14 +18,29 @@ void run(InputParser &parser, ProcessTable &table)
   {
     table.PrintProcesses();
   }
+  else if (args[0] == "kill")
+  {
+    table.KillJob(parser.RequireInt("PID required\n"));
+  }
+  else if (args[0] == "resume")
+  {
+    table.ResumeJob(parser.RequireInt("PID required\n"));
+  }
+  else if (args[0] == "sleep")
+  {
+    table.Sleep(parser.RequireInt("seconds required\n"));
+  }
+  else if (args[0] == "suspend")
+  {
+    table.SuspendJob(parser.RequireInt("PID required\n"));
+  }
   else if (args[0] == "wait")
   {
-    parser.RequireArgs(2, "PID required\n");
-    table.WaitJob(std::stoi(args[1]));
+    table.WaitJob(parser.RequireInt("PID required\n"));
   }
   else
   {
-    table.NewJob(input, parser.GetOptions());
+    table.NewJob(input, parser.GetCmdOptions());
   }
 }
 

@@ -10,8 +10,8 @@ public:
   void ReadInput();
   std::string GetInput() const;
   std::vector<std::string> GetArgs() const;
-  InputOptions GetOptions() const;
-  void RequireArgs(size_t argc, const char *message);
+  InputOptions GetCmdOptions() const;
+  int RequireInt(const char *message);
 
 private:
   void tokenize();
@@ -20,5 +20,4 @@ private:
   bool checkArgsLength() const;
   std::vector<std::string> args;
   std::string input;
-  InputOptions options;
 };
