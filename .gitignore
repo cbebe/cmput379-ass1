@@ -1,2 +1,14 @@
-build
+# editor settings
 .vscode
+
+# build files
+build
+
+# executables
+shell379
+sleeper
+runner
+
+# input and output files
+input
+output

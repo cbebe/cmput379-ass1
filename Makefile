@@ -4,7 +4,7 @@ PROJECT             = shell379
 BUILD_DIR           ?= build
 
 # Application sources and artifacts
-APP_BIN             = $(BUILD_DIR)/$(PROJECT)
+APP_BIN             = $(PROJECT)
 APP_SOURCES         = src/ProcessTable.cpp \
 											src/Process.cpp \
 											src/InputParser.cpp
@@ -47,11 +47,27 @@ SHOW_GEN            := $(SHOW_COMMAND) "[ GEN ]"
 ##############################################################################################
 DEFAULT_TARGET =  $(APP_BIN)
 
-all: $(DEFAULT_TARGET)
+all: $(DEFAULT_TARGET) runner sleeper
 .PHONY: all
 
 # Take care of compiler generated depedencies
 -include $(DEPS)
+
+runner: $(BUILD_DIR)/runner.o
+	$(SHOW_CXX) $@
+	$(SILENCE) $(CXX) $(CXXFLAGS) -o $@ $<
+
+$(BUILD_DIR)/runner.o: src/runner.cpp
+	$(SHOW_CXX) $@
+	$(SILENCE)$(CXX) $(CXXFLAGS) -c $< -o $@
+
+sleeper: $(BUILD_DIR)/sleeper.o
+	$(SHOW_CXX) $@
+	$(SILENCE) $(CXX) $(CXXFLAGS) -o $@ $<
+
+$(BUILD_DIR)/sleeper.o: src/sleeper.cpp
+	$(SHOW_CXX) $@
+	$(SILENCE)$(CXX) $(CXXFLAGS) -c $< -o $@
 
 run: all
 	./$(APP_BIN)
@@ -73,5 +89,6 @@ $(BUILD_DIR)/%.o: %.cpp
 ##############################################################################################
 clean:
 	$(SHOW_CLEAN) $(BUILD_DIR)
+	$(SHOW_CLEAN) $(APP_BIN) runner sleeper
 	$(SILENCE)rm -rf $(BUILD_DIR) 
 .PHONY: clean
