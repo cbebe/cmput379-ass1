@@ -97,9 +97,13 @@ $(BUILD_DIR)/%.o: %.cpp
 ##############################################################################################
 clean:
 	$(SHOW_CLEAN) $(BUILD_DIR)
-	$(SHOW_CLEAN) $(APP_BIN) 
-	$(SHOW_CLEAN) runner 
-	$(SHOW_CLEAN) sleeper
-	$(SHOW_CLEAN) forker
 	$(SILENCE)rm -rf $(BUILD_DIR) 
+	$(SHOW_CLEAN) $(APP_BIN) 
+	$(SILENCE)rm $(APP_BIN) 
+	$(SHOW_CLEAN) runner 
+	$(SILENCE)rm runner
+	$(SHOW_CLEAN) sleeper
+	$(SILENCE)rm sleeper
+	$(SHOW_CLEAN) forker
+	$(SILENCE)rm forker
 .PHONY: clean
