@@ -17,7 +17,7 @@ Process Process::from(std::string const &cmd, InputOptions options)
   bool fromStdIn = options.inputFiles.size() == 0;
   bool toStdOut = options.outputFiles.size() == 0;
 
-  int pid = fork();
+  pid_t pid = fork();
   if (pid < 0)
   {
     std::cout << "Error forking child process";
@@ -25,10 +25,17 @@ Process Process::from(std::string const &cmd, InputOptions options)
   }
   else if (pid == 0)
   {
-    // tried this first, but that would mean i had to delete after calling execvp, which is impossible
-    // https://stackoverflow.com/questions/7048888/stdvectorstdstring-to-char-array
-    // ended up using this
-    // https://stackoverflow.com/questions/52490877/execvp-using-vectorstring
+    // child process
+
+    /**
+      * Tried this first:
+      * https://stackoverflow.com/questions/7048888/stdvectorstdstring-to-char-array
+      * but that would mean i had to call delete on the array and its c strings after calling execvp
+      * which is probably impossible since the program is already replaced
+      * 
+      * Ended up using this:
+      * https://stackoverflow.com/questions/52490877/execvp-using-vectorstring
+      */
     std::vector<char *> arr;
     arr.reserve(options.cmdArgs.size() + 1);
     // still have to use pointers, so i just ended up using const_cast to remove the const
@@ -44,6 +51,7 @@ Process Process::from(std::string const &cmd, InputOptions options)
     }
   }
 
+  // parent process
   return Process(pid, cmd);
 }
 
