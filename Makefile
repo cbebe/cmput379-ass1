@@ -27,7 +27,7 @@ else
 endif
 
 CFLAGS              += $(COMMON_CFLAGS)
-CXXFLAGS            += $(COMMON_CFLAGS) -std=c++17
+CXXFLAGS            += $(COMMON_CFLAGS) -std=c++14
 
 # Silence make
 ifneq ($(V),)
@@ -47,7 +47,7 @@ SHOW_GEN            := $(SHOW_COMMAND) "[ GEN ]"
 ##############################################################################################
 DEFAULT_TARGET =  $(APP_BIN)
 
-all: $(DEFAULT_TARGET) runner sleeper
+all: $(DEFAULT_TARGET) runner sleeper forker
 .PHONY: all
 
 # Take care of compiler generated depedencies
@@ -66,6 +66,14 @@ sleeper: $(BUILD_DIR)/sleeper.o
 	$(SILENCE) $(CXX) $(CXXFLAGS) -o $@ $<
 
 $(BUILD_DIR)/sleeper.o: src/sleeper.cpp
+	$(SHOW_CXX) $@
+	$(SILENCE)$(CXX) $(CXXFLAGS) -c $< -o $@
+
+forker: $(BUILD_DIR)/forker.o
+	$(SHOW_CXX) $@
+	$(SILENCE) $(CXX) $(CXXFLAGS) -o $@ $<
+
+$(BUILD_DIR)/forker.o: src/forker.cpp
 	$(SHOW_CXX) $@
 	$(SILENCE)$(CXX) $(CXXFLAGS) -c $< -o $@
 
@@ -92,5 +100,6 @@ clean:
 	$(SHOW_CLEAN) $(APP_BIN) 
 	$(SHOW_CLEAN) runner 
 	$(SHOW_CLEAN) sleeper
+	$(SHOW_CLEAN) forker
 	$(SILENCE)rm -rf $(BUILD_DIR) 
 .PHONY: clean

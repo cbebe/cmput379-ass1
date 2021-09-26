@@ -8,6 +8,7 @@ build
 shell379
 sleeper
 runner
+forker
 
 # input and output files
 input
