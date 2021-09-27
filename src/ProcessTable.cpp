@@ -1,15 +1,13 @@
 #include "ProcessTable.h"
-#include "InputParser.h"
-#include "PsEntry.h"
 
 #include <iomanip>
 #include <iostream>
 #include <stdexcept>
 #include <unordered_map>
 
-#define MAX_PT_ENTRIES 32 // Max entries in the Process Table
+#include "InputParser.h"
 
-using PsEntryTable = std::unordered_map<int, PsEntry>;
+#define MAX_PT_ENTRIES 32  // Max entries in the Process Table
 
 std::vector<std::string> getPsOutput() {
   // https://stackoverflow.com/questions/478898/how-do-i-execute-a-command-and-get-the-output-of-the-command-within-c-using-po
@@ -28,32 +26,30 @@ std::vector<std::string> getPsOutput() {
   return psLines;
 }
 
-PsEntryTable getPsEntries(std::vector<std::string> const &psLines) {
-  PsEntryTable psEntries;
-  for (auto const &s : psLines) {
+std::unordered_map<int, int> getPsEntries(
+    std::vector<std::string> const& psLines) {
+  std::unordered_map<int, int> psEntries;
+  for (auto const& s : psLines) {
     // ps line is this format:
     // PID TTY HH:MM:SS: CMD
     std::vector<std::string> psLine = InputParser::Tokenize(s);
     int pid = std::stoi(psLine[0]);
     // time in seconds
     int time = std::stoi(InputParser::Split(psLine[2], ':')[2]);
-    // this is assuming that the file has no "<defunct>" in its name
-    bool zombie = psLine[psLine.size() - 1] == "<defunct>";
-    PsEntry entry = {time, zombie};
-    psEntries.emplace(pid, entry);
+    psEntries.emplace(pid, time);
   }
 
   return psEntries;
 }
 
 void ProcessTable::PrintProcesses() const {
-  PsEntryTable psEntries = getPsEntries(getPsOutput());
+  std::unordered_map<int, int> psEntries = getPsEntries(getPsOutput());
   std::cout << "Running processes:\n";
   size_t numProcesses = processes.size();
   if (numProcesses > 0) {
     std::cout << " #    PID S SEC COMMAND\n";
     int i = 0;
-    for (auto const &p : processes) {
+    for (auto const& p : processes) {
       std::cout << std::setw(2) << i++ << ": "
                 << p.second.PrintProcess(psEntries.at(p.first)) << "\n";
     }
@@ -68,7 +64,7 @@ void ProcessTable::PrintResourcesUsed() const {
   Process::PrintResourceUsage();
 }
 
-void ProcessTable::NewJob(const std::string &cmd, InputOptions const &options) {
+void ProcessTable::NewJob(const std::string& cmd, InputOptions const& options) {
   if (processes.size() > MAX_PT_ENTRIES - 1) {
     throw "Max Process table entries exceeded";
   }
@@ -99,10 +95,10 @@ void ProcessTable::addProcess(Process p) { processes.emplace(p.GetPid(), p); }
 
 void ProcessTable::removeProcess(int pid) { processes.erase(pid); }
 
-Process &ProcessTable::getProcess(int pid) {
+Process& ProcessTable::getProcess(int pid) {
   try {
     return processes.at(pid);
-  } catch (std::out_of_range &e) {
+  } catch (std::out_of_range& e) {
     throw "Process not found";
   }
 }

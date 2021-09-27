@@ -8,7 +8,7 @@
 #include <iostream>
 #include <sstream>
 
-Process Process::from(std::string const &cmd, InputOptions options) {
+Process Process::from(std::string const& cmd, InputOptions options) {
   pid_t pid = fork();
   if (pid < 0) {
     std::cout << "Error forking child process";
@@ -26,12 +26,12 @@ Process Process::from(std::string const &cmd, InputOptions options) {
      * Ended up using this:
      * https://stackoverflow.com/questions/52490877/execvp-using-vectorstring
      */
-    std::vector<char *> arr;
+    std::vector<char*> arr;
     arr.reserve(options.cmdArgs.size() + 1);
     // still have to use pointers, so i just ended up using const_cast to
     // remove the const
-    for (auto const &sp : options.cmdArgs) {
-      arr.push_back(const_cast<char *>(sp.c_str()));
+    for (auto const& sp : options.cmdArgs) {
+      arr.push_back(const_cast<char*>(sp.c_str()));
     }
 
     // null terminator for c-style array
@@ -62,17 +62,16 @@ void Process::PrintResourceUsage() {
             << "Sys  time = \t" << usage.ru_stime.tv_sec << " seconds\n";
 }
 
-Process::Process(int pid, std::string const &cmd) {
+Process::Process(int pid, std::string const& cmd) {
   this->cmd = cmd;
   this->pid = pid;
   this->status = RUNNING;
 }
 
-std::string Process::PrintProcess(PsEntry entry) const {
+std::string Process::PrintProcess(int time) const {
   std::stringstream s;
-  Status currentStatus = entry.zombie ? ZOMBIE : status;
-  s << std::setw(5) << pid << std::setw(2) << (char)currentStatus
-    << std::setw(4) << entry.time << " " << cmd;
+  s << std::setw(5) << pid << std::setw(2) << (char)status << std::setw(4)
+    << time << " " << cmd;
   return s.str();
 };
 
@@ -94,10 +93,12 @@ void Process::Kill() {
 }
 
 void Process::Wait() {
-  int status;
+  int stat_loc;
   // don't let program hang by waiting for a suspended process
-  Resume();
-  waitpid(pid, &status, 0);
+  if (status == SUSPENDED) {
+    Resume();
+  }
+  waitpid(pid, &stat_loc, 0);
 }
 
 void Process::Resume() {

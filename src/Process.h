@@ -4,7 +4,6 @@
 #include <string>
 
 #include "InputOptions.h"
-#include "PsEntry.h"
 
 typedef enum {
   // process is running in background
@@ -18,11 +17,11 @@ typedef enum {
 } Status;
 
 class Process {
-public:
+ public:
   static void Sleep(int seconds);
-  static Process from(std::string const &cmd, InputOptions options);
+  static Process from(std::string const& cmd, InputOptions options);
   static void PrintResourceUsage();
-  std::string PrintProcess(PsEntry entry) const;
+  std::string PrintProcess(int time) const;
   void Kill();
   void Wait();
   void Resume();
@@ -32,11 +31,11 @@ public:
   Status GetStatus() const;
   void SetStatus(Status s);
 
-private:
-  Process(int pid, std::string const &cmd);
+ private:
+  Process(int pid, std::string const& cmd);
   int pid;
   Status status;
   std::string cmd;
 };
 
-#endif // PROCESS_H_
+#endif  // PROCESS_H_
