@@ -53,29 +53,17 @@ all: $(DEFAULT_TARGET) runner sleeper forker
 # Take care of compiler generated depedencies
 -include $(DEPS)
 
-runner: $(BUILD_DIR)/runner.o
+runner: $(BUILD_DIR)/src/runner.o
 	$(SHOW_CXX) $@
 	$(SILENCE) $(CXX) $(CXXFLAGS) -o $@ $<
 
-$(BUILD_DIR)/runner.o: src/runner.cpp
-	$(SHOW_CXX) $@
-	$(SILENCE)$(CXX) $(CXXFLAGS) -c $< -o $@
-
-sleeper: $(BUILD_DIR)/sleeper.o
+sleeper: $(BUILD_DIR)/src/sleeper.o
 	$(SHOW_CXX) $@
 	$(SILENCE) $(CXX) $(CXXFLAGS) -o $@ $<
 
-$(BUILD_DIR)/sleeper.o: src/sleeper.cpp
-	$(SHOW_CXX) $@
-	$(SILENCE)$(CXX) $(CXXFLAGS) -c $< -o $@
-
-forker: $(BUILD_DIR)/forker.o
+forker: $(BUILD_DIR)/src/forker.o
 	$(SHOW_CXX) $@
 	$(SILENCE) $(CXX) $(CXXFLAGS) -o $@ $<
-
-$(BUILD_DIR)/forker.o: src/forker.cpp
-	$(SHOW_CXX) $@
-	$(SILENCE)$(CXX) $(CXXFLAGS) -c $< -o $@
 
 run: all
 	./$(APP_BIN)
@@ -97,13 +85,18 @@ $(BUILD_DIR)/%.o: %.cpp
 ##############################################################################################
 clean:
 	$(SHOW_CLEAN) $(BUILD_DIR)
-	$(SILENCE)rm -rf $(BUILD_DIR) 
-	$(SHOW_CLEAN) $(APP_BIN) 
-	$(SILENCE)rm $(APP_BIN) 
-	$(SHOW_CLEAN) runner 
+	$(SILENCE)rm -rf $(BUILD_DIR)
+
+	$(SHOW_CLEAN) $(APP_BIN)
+	$(SILENCE)rm $(APP_BIN)
+
+	$(SHOW_CLEAN) runner
 	$(SILENCE)rm runner
+
 	$(SHOW_CLEAN) sleeper
 	$(SILENCE)rm sleeper
+
 	$(SHOW_CLEAN) forker
 	$(SILENCE)rm forker
+
 .PHONY: clean
