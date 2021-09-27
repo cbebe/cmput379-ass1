@@ -3,7 +3,7 @@
 #include <iostream>
 
 void printUsage(char const* name) {
-  std::cout << "USAGE: " << name << " <seconds>" << std::endl;
+  std::cerr << "USAGE: " << name << " <seconds>" << std::endl;
 }
 
 void die(char const* name) {

@@ -8,37 +8,55 @@
 #include <iostream>
 #include <sstream>
 
+void execute(std::vector<std::string> const& cmdArgs) {
+  /**
+   * Tried this first:
+   * https://stackoverflow.com/questions/7048888/stdvectorstdstring-to-char-array
+   * but that would mean i had to call delete on the array and its c
+   * strings after calling execvp which is probably impossible since the
+   * program is already replaced
+   *
+   * Ended up using this:
+   * https://stackoverflow.com/questions/52490877/execvp-using-vectorstring
+   */
+  std::vector<char*> arr;
+  arr.reserve(cmdArgs.size() + 1);
+  // still have to use pointers, so i just ended up using const_cast to
+  // remove the const
+  for (auto const& sp : cmdArgs) {
+    arr.push_back(const_cast<char*>(sp.c_str()));
+  }
+
+  // null terminator for c-style array
+  arr.push_back(nullptr);
+  if (execvp(arr[0], arr.data()) < 0) {
+    std::cerr << "execvp failed\n";
+    exit(1);
+  }
+}
+
 Process Process::from(std::string const& cmd, InputOptions options) {
   pid_t pid = fork();
   if (pid < 0) {
-    std::cout << "Error forking child process";
+    std::cerr << "Error forking child process";
     exit(1);
   } else if (pid == 0) {
     // child process
-
-    /**
-     * Tried this first:
-     * https://stackoverflow.com/questions/7048888/stdvectorstdstring-to-char-array
-     * but that would mean i had to call delete on the array and its c
-     * strings after calling execvp which is probably impossible since the
-     * program is already replaced
-     *
-     * Ended up using this:
-     * https://stackoverflow.com/questions/52490877/execvp-using-vectorstring
-     */
-    std::vector<char*> arr;
-    arr.reserve(options.cmdArgs.size() + 1);
-    // still have to use pointers, so i just ended up using const_cast to
-    // remove the const
-    for (auto const& sp : options.cmdArgs) {
-      arr.push_back(const_cast<char*>(sp.c_str()));
+    if (options.inputFiles.size() > 0) {
+      // get input from files
+      int fd[2];
+      if (pipe(fd)) {
+        std::cerr << "Pipe creation failed\n";
+      }
     }
-
-    // null terminator for c-style array
-    arr.push_back(nullptr);
-    if (execvp(arr[0], arr.data()) < 0) {
-      std::cout << "execvp failed\n";
-      exit(1);
+    if (options.outputFiles.size() > 0) {
+      // print output to files
+    }
+    if (options.inputFiles.size() == 0 && options.outputFiles.size() == 0) {
+      // everything is stdin and stdout
+      execute(options.cmdArgs);
+    } else if (options.inputFiles.size() > 0 &&
+               options.outputFiles.size() == 0) {
     }
   }
   // parent process, create Process object

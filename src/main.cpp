@@ -39,7 +39,7 @@ int main() {
     try {
       run(parser, table);
     } catch (const char* msg) {
-      std::cout << msg << "\n";
+      std::cerr << msg << "\n";
     }
   }
 }
