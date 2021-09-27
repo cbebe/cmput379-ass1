@@ -7,12 +7,12 @@
 #define MAX_LENGTH 20    // Max # of characters in an argument
 
 using std::string;
-using std::vector;
+using StrArr = std::vector<string>;
 
 // https://www.quora.com/How-do-I-split-a-string-by-space-into-an-array-in-c++
-vector<string> InputParser::Tokenize(string const& input) {
+StrArr InputParser::Tokenize(string const& input) {
   std::istringstream iss(input);
-  vector<string> tokens;
+  StrArr tokens;
   for (string s; iss >> s;) {
     tokens.push_back(s);
   }
@@ -20,9 +20,9 @@ vector<string> InputParser::Tokenize(string const& input) {
   return tokens;
 }
 
-vector<string> InputParser::Split(string const& input, char delim) {
+StrArr InputParser::Split(string const& input, char delim) {
   std::stringstream ss(input);
-  vector<string> tokens;
+  StrArr tokens;
   for (string s; std::getline(ss, s, delim);) {
     tokens.push_back(s);
   }
@@ -102,7 +102,7 @@ int InputParser::RequireInt(const char* message) {
 
 string InputParser::Input() const { return input; }
 
-vector<string> InputParser::Args() const { return args; }
+StrArr InputParser::Args() const { return args; }
 
 bool InputParser::CheckNumberArgs() const {
   return args.size() <= MAX_ARGS + 1;

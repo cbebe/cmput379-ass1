@@ -9,7 +9,10 @@
 
 #define MAX_PT_ENTRIES 32  // Max entries in the Process Table
 
-std::vector<std::string> getPsOutput() {
+using PsEntries = std::unordered_map<int, int>;
+using StrArr = std::vector<std::string>;
+
+StrArr getPsOutput() {
   // https://stackoverflow.com/questions/478898/how-do-i-execute-a-command-and-get-the-output-of-the-command-within-c-using-po
   std::array<char, 128> buffer;
   std::string result;
@@ -20,19 +23,18 @@ std::vector<std::string> getPsOutput() {
   while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
     result += buffer.data();
   }
-  std::vector<std::string> psLines = InputParser::Split(result, '\n');
+  StrArr psLines = InputParser::Split(result, '\n');
   // remove first line which is just a table heading
   psLines.erase(psLines.begin());
   return psLines;
 }
 
-std::unordered_map<int, int> getPsEntries(
-    std::vector<std::string> const& psLines) {
-  std::unordered_map<int, int> psEntries;
+PsEntries getPsEntries(StrArr const& psLines) {
+  PsEntries psEntries;
   for (auto const& s : psLines) {
     // ps line is this format:
     // PID TTY HH:MM:SS: CMD
-    std::vector<std::string> psLine = InputParser::Tokenize(s);
+    StrArr psLine = InputParser::Tokenize(s);
     int pid = std::stoi(psLine[0]);
     // time in seconds
     int time = std::stoi(InputParser::Split(psLine[2], ':')[2]);
