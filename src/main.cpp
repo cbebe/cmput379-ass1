@@ -3,21 +3,20 @@
 #include "InputParser.h"
 #include "ProcessTable.h"
 
-void run(InputParser &parser, ProcessTable &table) {
+void run(InputParser& parser, ProcessTable& table) {
   std::cout << "shell379> " << std::flush;
   parser.ReadInput();
-  std::string input = parser.GetInput();
+  std::string input = parser.Input();
   if (input == "") {
     return;
   }
-  std::vector<std::string> args = parser.GetArgs();
+  std::vector<std::string> args = parser.Args();
 
   if (args[0] == "exit") {
     table.PrintResourcesUsed();
     exit(0);
   } else if (args[0] == "jobs") {
     table.PrintProcesses();
-
   } else if (args[0] == "kill") {
     table.KillJob(parser.RequireInt("PID required"));
   } else if (args[0] == "resume") {
@@ -39,7 +38,7 @@ int main() {
   while (true) {
     try {
       run(parser, table);
-    } catch (const char *msg) {
+    } catch (const char* msg) {
       std::cout << msg << "\n";
     }
   }

@@ -10,17 +10,17 @@ int longlongJob(long long maxSeconds, long long num) {
   int k = 0;
   for (long long i = 0; i < num; i++) {
     for (long long j = 0; j < num; j++) {
+      k += 20;
       if ((high_resolution_clock::now() - start) >= maxDuration) {
         return k;
       }
-      k += 20;
     }
   }
 
   return k;
 }
 
-int main(int argc, char const *argv[]) {
+int main(int argc, char const* argv[]) {
   long long maxSeconds;
   long long num;
   if (argc == 3) {

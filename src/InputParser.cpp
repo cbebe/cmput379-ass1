@@ -3,14 +3,14 @@
 #include <iostream>
 #include <sstream>
 
-#define LINE_LENGTH 100 // Max # of characters in an input line
-#define MAX_LENGTH 20   // Max # of characters in an argument
+#define LINE_LENGTH 100  // Max # of characters in an input line
+#define MAX_LENGTH 20    // Max # of characters in an argument
 
 using std::string;
 using std::vector;
 
 // https://www.quora.com/How-do-I-split-a-string-by-space-into-an-array-in-c++
-vector<string> InputParser::Tokenize(string const &input) {
+vector<string> InputParser::Tokenize(string const& input) {
   std::istringstream iss(input);
   vector<string> tokens;
   for (string s; iss >> s;) {
@@ -20,7 +20,7 @@ vector<string> InputParser::Tokenize(string const &input) {
   return tokens;
 }
 
-vector<string> InputParser::Split(string const &input, char delim) {
+vector<string> InputParser::Split(string const& input, char delim) {
   std::stringstream ss(input);
   vector<string> tokens;
   for (string s; std::getline(ss, s, delim);) {
@@ -43,7 +43,7 @@ void InputParser::ReadInput() {
 
   args = Tokenize(input);
 
-  if (!checkNumberArgs()) {
+  if (!CheckNumberArgs()) {
     throw "Too many arguments";
   }
 
@@ -60,21 +60,21 @@ InputOptions InputParser::GetCmdOptions() const {
   for (unsigned int i = 0; i < args.size(); i++) {
     string arg = args[i];
     switch (arg.at(0)) {
-    case '&':
-      // makes sure that there's a command
-      if (arg != "&" || args.size() == 1 || i != args.size() - 1)
-        throw "Invalid input of '&'";
+      case '&':
+        // makes sure that there's a command
+        if (arg != "&" || args.size() == 1 || i != args.size() - 1)
+          throw "Invalid input of '&'";
 
-      options.inBackground = true;
-      break;
-    case '>':
-      options.outputFiles.push_back(arg.substr(1));
-      break;
-    case '<':
-      options.inputFiles.push_back(arg.substr(1));
-      break;
-    default:
-      options.cmdArgs.push_back(arg);
+        options.inBackground = true;
+        break;
+      case '>':
+        options.outputFiles.push_back(arg.substr(1));
+        break;
+      case '<':
+        options.inputFiles.push_back(arg.substr(1));
+        break;
+      default:
+        options.cmdArgs.push_back(arg);
     }
   }
 
@@ -88,23 +88,23 @@ InputOptions InputParser::GetCmdOptions() const {
   return options;
 }
 
-int InputParser::RequireInt(const char *message) {
+int InputParser::RequireInt(const char* message) {
   try {
     if (args.size() > 2) {
       throw "Wrong number of args";
     }
 
     return std::stoi(args[1]);
-  } catch (std::invalid_argument &e) {
+  } catch (std::invalid_argument& e) {
     throw message;
   }
 }
 
-string InputParser::GetInput() const { return input; }
+string InputParser::Input() const { return input; }
 
-vector<string> InputParser::GetArgs() const { return args; }
+vector<string> InputParser::Args() const { return args; }
 
-bool InputParser::checkNumberArgs() const {
+bool InputParser::CheckNumberArgs() const {
   return args.size() <= MAX_ARGS + 1;
 }
 
@@ -113,7 +113,7 @@ bool InputParser::checkLineLength() const {
 }
 
 bool InputParser::checkArgsLength() const {
-  for (auto const &a : args) {
+  for (auto const& a : args) {
     if (a.length() > 20) {
       return false;
     }
